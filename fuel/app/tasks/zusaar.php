@@ -44,7 +44,12 @@ class Zusaar
 	 */
 	public static function run($speech = null)
 	{
+			static::exec();
+	}
+	private static function exec()
+	{
 			$data = static::get_zusaar();
+			// print_r($data);
 			$valid_data = array();
 			$cnt = 0;
 			$enabled_keys = array('event_id',
@@ -63,10 +68,12 @@ class Zusaar
 														'updated_at',
 														);
 
+			// data to event
 			foreach ($data as $event) {
 					//$limit = $event['owner_nickname'];
 					//$limit = $event['url'];
 					$data_array = array();
+					// イベントから情報を抜き出し
 					foreach ($event as $key => $value) {
 							if(in_array($key, $enabled_keys))
 							{
@@ -75,9 +82,42 @@ class Zusaar
 					}
 					array_push($valid_data,$data_array);
 			}
-			//print_r($valid_data);
 			$zusaar_data = static::convert_zusaar_data($valid_data);
-			
+			//print_r($zusaar_data);
+			$entry_data = static::convert_now_date($zusaar_data);
+
+
+			// print_r($entry_data);
+			$db = \Database_Connection::instance();
+			$db->start_transaction();
+			try
+			{
+				// 全件、削除
+				\DB::delete('events')->where('type_flg', 1)->execute();
+				// 新規行の登録
+				foreach ($entry_data as $event) {
+						\Model_Event::forge($event)->save();
+				}
+				$db->commit_transaction();
+			}catch(\Exception $ex)
+			{
+					$db->rollback_transaction();
+					//print_r($ex);
+			}
+	}
+	private static function convert_now_date($data)
+	{
+			$today = Date('Ymd')."\n";
+			$entry_data = array();
+			foreach ($data as $event) {
+					$ended_at = Date('Ymd',strtotime($event['ended_at']));
+					// 今日以上の日付のデータのみ抽出
+					if($today <= $ended_at)
+					{
+							array_push($entry_data,$event);
+					}
+			}
+			return $entry_data;
 	}
 	// 配列のKeyを変換		
 	private static function convert_zusaar_data($data)
@@ -97,7 +137,7 @@ class Zusaar
 												'lat',
 												'updated_at',
 												);
-			$to_keys = array( 'id',
+			$to_keys = array( 'event_id',
 												'title',
 												'url',
 												'started_at',
@@ -120,8 +160,10 @@ class Zusaar
 							if(array_key_exists($from_keys[$i],$event))
 							{
 									$event_array = array_merge($event_array,array($to_keys[$i] => $event[$from_keys[$i]]));
+
 							}
 					}
+					$event_array = array_merge($event_array,array('type_flg'=> '1'));
 					array_push($convert_array,$event_array);
 			}
 			return $convert_array;
@@ -130,12 +172,12 @@ class Zusaar
 	private static function get_zusaar()
 	{
 			// 何ヶ月取得するのか。
-			$month = 3;
-			$minus = 2;
+			$month = 1;
+			$minus = -1;
 			$zusaar_data = array();
-			for($i=0;$i<=3;$i++)
+			for($i=0;$i<=$month;$i++)
 			{
-					$ym = date('Ym',strtotime(($i-$minus)." month"));
+					$ym = date('Ym',strtotime(($i+$minus)." month"));
 					$zusaar_data = array_merge($zusaar_data,static::get_zusaar_api_all($ym));
 			}
 			return $zusaar_data;
