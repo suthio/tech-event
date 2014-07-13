@@ -13,7 +13,12 @@
 
 return array(
 	'default_timezone'   => 'Asia/Tokyo',
+'language'          => 'ja',
+'language_fallback' => 'en',
+ 'locale'             => 'ja_JP.UTF-8',
+ 'encoding'  => 'UTF-8',
 
+#'locale'            => 'ja_JP.UTF-8',
 	/**
 	 * base_url - The base URL of the application.
 	 * MUST contain a trailing slash (/)
