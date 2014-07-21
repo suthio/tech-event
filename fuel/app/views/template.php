@@ -34,7 +34,12 @@
 <?php echo $content; ?>
 		</div>
 		<footer>
-			<p>更新履歴</p>
+			<h3>機能紹介</h3>
+			<ul>
+				<li>Connpass、Zusaar、Doorkeeperからイベント情報の取得を行っています。</li>
+				<li>参加者数の多い順に最大30件のみ表示しています。</li>
+			</ul>
+			<h3>更新履歴</h3>
 			<dl class="history">
 				<dt>2014/07/21</dt>
 				<dd>
