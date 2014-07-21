@@ -3,7 +3,7 @@ class Controller_Event extends Controller_Template{
 
 	public function action_index()
 	{
-		$data['events'] = Model_Event::find('all');
+		$data['events'] = Model_Event::find('all',array('order_by' => array('limit' => 'desc')));
 		$this->template->title = "Events";
 		$this->template->content = View::forge('event/index', $data);
 

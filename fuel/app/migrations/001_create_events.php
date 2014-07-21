@@ -12,6 +12,7 @@ class Create_events
 			'event_id' => array('constraint' => 255, 'type' => 'varchar'),
 			'title' => array('constraint' => 255, 'type' => 'varchar'),
 			'url' => array('constraint' => 255, 'type' => 'varchar'),
+			'address' => array('constraint' => 255, 'type' => 'varchar'),
 			'started_at' => array('type' => 'datetime'),
 			'ended_at' => array('type' => 'datetime'),
 			'accepted' => array('constraint' => 11, 'type' => 'int'),

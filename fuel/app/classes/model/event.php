@@ -9,6 +9,7 @@ class Model_Event extends Model
 		'event_id',
 		'title',
 		'url',
+		'address',
 		'started_at',
 		'ended_at',
 		'accepted',

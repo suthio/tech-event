@@ -13,7 +13,7 @@ return array(
 		array(
 		),
 		'package' => 
-		array(
+
 		),
 	),
 	'folder' => 'migrations/',
