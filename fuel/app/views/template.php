@@ -34,11 +34,18 @@
 <?php echo $content; ?>
 		</div>
 		<footer>
-			<p class="pull-right">Page rendered in {exec_time}s using {mem_usage}mb of memory.</p>
-			<p>
+			<p>更新履歴</p>
+			<dl class="history">
+				<dt>2014/07/21</dt>
+				<dd>
+					・リリース
+				</dd>
+			</dl>
+<!-- 			<p class="pull-right">Page rendered in {exec_time}s using {mem_usage}mb of memory.</p>
+ -->			<p>
 				<a href="http://fuelphp.com">FuelPHP</a> is released under the MIT license.<br>
-				<small>Version: <?php echo e(Fuel::VERSION); ?></small>
-			</p>
+<!-- 				<small>Version: <?php echo e(Fuel::VERSION); ?></small>
+ -->			</p>
 		</footer>
 	</div>
 </body>

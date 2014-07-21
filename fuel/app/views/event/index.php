@@ -1,22 +1,44 @@
+<style type="text/css">
+
+  .boxContainer:before,
+  .boxContainer:after {
+  	content: "";
+  	display: table;
+  }
+  .boxContainer:after {
+  	clear: both;
+  }
+  .box {
+  	width:300px;
+  	display: inline-block;
+  	_display: inline;
+  }
+  .box .title {
+  	white-space: nowrap;
+	  overflow: hidden;
+  	text-overflow: ellipsis;
+  }	
+
+</style>
 <h2><span class='muted'></span></h2>
 <br>
 <?php if ($events): ?>
 <?php $i = 0; ?>
+<div class="boxContainer">
 <?php foreach ($events as $item): ?>
-<div class="row" >
+<div class="box"  >
 	<a href="<?php echo $item->url; ?>" target="_blank">
-		<div>
+		<div class="title">
 			<?php echo $item->title; ?>
 		</div>
-		<div>
+		<div class="date">
 			<?php echo date('n/d G:i', strtotime($item->started_at)); ?>&nbsp;-&nbsp;<?php echo date('n/d G:i', strtotime($item->ended_at)); ?>		
 		</div>
-		<div>
+		<div class="">
 			参加/定員 <?php echo ($item->accepted+$item->waiting); ?>/<?php echo $item->limit; ?>
-	</div>
+		</div>
 	</a>
-
-	<div>
+	<div class="option">
 	<!--ここには画像を置く-->
 	<?php if($item->type_flg == 1){echo 'Zusaar';}elseif($item->type_flg == 2){echo 'Connpass';} ?>
 	<a href="http://www.google.com/calendar/event?action=TEMPLATE&amp;
@@ -34,7 +56,7 @@
 </div>
 <?php $i++; ?>
 <?php endforeach; ?>
-
+</div>
 <?php else: ?>
 <p>No Events.</p>
 
