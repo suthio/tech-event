@@ -1,4 +1,4 @@
-<h2>Listing <span class='muted'>Events</span></h2>
+<h2><span class='muted'></span></h2>
 <br>
 <?php if ($events): ?>
 <?php $i = 0; ?>
@@ -18,7 +18,7 @@
 
 	<div>
 	<!--ここには画像を置く-->
-	<?php if($item->type_flg == 1){echo 'Zusaar';} ?>
+	<?php if($item->type_flg == 1){echo 'Zusaar';}elseif($item->type_flg == 2){echo 'Connpass';} ?>
 	<a href="http://www.google.com/calendar/event?action=TEMPLATE&amp;
 		text=<?php echo $item->title; ?>&amp;
 		dates=<?php echo date('Ymd\THis\Z', strtotime($item->started_at.' -9 hour')); ?>/<?php echo date('Ymd\THis\Z', strtotime($item->ended_at.' -9 hour')); ?>&amp;

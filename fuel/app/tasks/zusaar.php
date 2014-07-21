@@ -172,7 +172,7 @@ class Zusaar
 	private static function get_zusaar()
 	{
 			// 何ヶ月取得するのか。
-			$month = 1;
+			$month = 3;
 			$minus = -1;
 			$zusaar_data = array();
 			for($i=0;$i<=$month;$i++)
