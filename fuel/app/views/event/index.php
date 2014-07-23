@@ -40,7 +40,7 @@
 	</a>
 	<div class="option">
 	<!--ここには画像を置く-->
-	<?php if($item->type_flg == 1){echo 'Zusaar';}elseif($item->type_flg == 2){echo 'Connpass';}elseif($item->type_flg == 3){echo 'Doorkeeper';} ?>
+	<?php if($item->type_flg == 1){echo 'Zusaar';}elseif($item->type_flg == 2){echo 'Connpass';}elseif($item->type_flg == 3){echo 'Doorkeeper';}elseif($item->type_flg == 4){echo 'Atnd'} ?>
 	<a href="http://www.google.com/calendar/event?action=TEMPLATE&amp;
 		text=<?php echo $item->title; ?>&amp;
 		dates=<?php echo date('Ymd\THis\Z', strtotime($item->started_at.' -9 hour')); ?>/<?php echo date('Ymd\THis\Z', strtotime($item->ended_at.' -9 hour')); ?>&amp;

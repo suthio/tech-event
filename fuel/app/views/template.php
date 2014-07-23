@@ -47,7 +47,7 @@
 		<footer>
 			<h3>機能紹介</h3>
 			<ul>
-				<li>Connpass、Zusaar、Doorkeeperからイベント情報の取得を行っています。</li>
+				<li>Connpass、Zusaar、Doorkeeper、ATNDからイベント情報の取得を行っています。</li>
 				<li>参加者数の多い順に最大30件のみ表示しています。</li>
 			</ul>
 			<h3>更新履歴</h3>
@@ -55,6 +55,10 @@
 				<dt>2014/07/21</dt>
 				<dd>
 					・リリース
+				</dd>
+				<dt>2014/07/24</dt>
+				<dd>
+					・対応サイトにATNDを追加
 				</dd>
 			</dl>
 <!-- 			<p class="pull-right">Page rendered in {exec_time}s using {mem_usage}mb of memory.</p>
