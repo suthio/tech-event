@@ -92,12 +92,19 @@ class Zusaar
 			$db->start_transaction();
 			try
 			{
-				// 全件、削除
-				\DB::delete('events')->where('type_flg', 1)->execute();
-				// 新規行の登録
-				foreach ($entry_data as $event) {
-						\Model_Event::forge($event)->save();
-				}
+        // 全件、削除
+        \DB::delete('events')->where('type_flg', 1)->execute();
+        // 新規行の登録
+        $entry_event_id = array();
+        foreach ($entry_data as $event) {
+            // $cnt = \DB::query("select count(*) from events where type_flg = '4' and event_id='". $event['event_id'] ."'")->execute();
+            // print $cnt;
+            if(!in_array($event['event_id'],$entry_event_id))
+            {
+                \Model_Event::forge($event)->save();
+                array_push($entry_event_id,$event['event_id']);
+            }
+        }
 				$db->commit_transaction();
 			}catch(\Exception $ex)
 			{

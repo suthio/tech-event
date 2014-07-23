@@ -26,7 +26,7 @@ namespace Fuel\Tasks;
 
 ini_set("mbstring.internal_encoding", "UTF-8");
 
-class Doorkeeper 
+class Atnd
 {
 
   /**
@@ -52,19 +52,21 @@ class Doorkeeper
       // print_r($data);
       $valid_data = array();
       $cnt = 0;
-      $enabled_keys = array('id',
-                          'title',
-                          'public_url',
-                          'starts_at',
-                          'ends_at',
-                          'address',
-                          'participants',
-                          'ticket_limit',
-                          'waitlisted',
-                          'venue_name',
-                          'lon',
-                          'long',
-                        );
+      $enabled_keys = array('event_id',
+                            'event_url',
+                            'title',
+                            'started_at',
+                            'ended_at',
+                            'address',
+                            'accepted',
+                            'limit',
+                            'waiting',
+                            'place',
+                            'catch',
+                            'lon',
+                            'lat',
+                            'updated_at',
+                            );
 
       // data to event
       foreach ($data as $event) {
@@ -72,7 +74,7 @@ class Doorkeeper
           //$limit = $event['url'];
           $data_array = array();
           // イベントから情報を抜き出し
-          foreach ($event['event'] as $key => $value) {
+          foreach ($event as $key => $value) {
               if(in_array($key, $enabled_keys))
               {
                   $data_array = array_merge(array($key => $value),$data_array);
@@ -84,14 +86,14 @@ class Doorkeeper
       //print_r($zusaar_data);
       $entry_data = static::convert_now_date($zusaar_data);
       $entry_data = static::input_default_value($entry_data);
+
       // print_r($entry_data);
       $db = \Database_Connection::instance();
       $db->start_transaction();
       try
       {
         // 全件、削除
-        // 全件、削除
-        \DB::delete('events')->where('type_flg', 3)->execute();
+        \DB::delete('events')->where('type_flg', 4)->execute();
         // 新規行の登録
         $entry_event_id = array();
         foreach ($entry_data as $event) {
@@ -99,15 +101,19 @@ class Doorkeeper
             // print $cnt;
             if(!in_array($event['event_id'],$entry_event_id))
             {
-                \Model_Event::forge($event)->save();
-                array_push($entry_event_id,$event['event_id']);
+                if($event['event_id'] != '1'){
+                  \Model_Event::forge($event)->save();
+                  array_push($entry_event_id,$event['event_id']);
+                }
             }
         }
         $db->commit_transaction();
       }catch(\Exception $ex)
       {
           $db->rollback_transaction();
-          print_r($ex);
+          // print_r($ex);
+          throw $ex;
+          ;
       }
   }
   private static function input_default_value($data)
@@ -122,6 +128,7 @@ class Doorkeeper
       }
       return $events;
   }
+
   private static function convert_now_date($data)
   {
       $today = Date('Ymd')."\n";
@@ -139,18 +146,20 @@ class Doorkeeper
   // 配列のKeyを変換    
   private static function convert_zusaar_data($data)
   {
-      $from_keys = array('id',
+      $from_keys = array('event_id',
                         'title',
-                        'public_url',
-                        'starts_at',
-                        'ends_at',
+                        'event_url',
+                        'started_at',
+                        'ended_at',
                         'address',
-                        'participants',
-                        'ticket_limit',
-                        'waitlisted',
-                        'venue_name',
+                        'accepted',
+                        'limit',
+                        'waiting',
+                        'place',
+                        'catch',
                         'lon',
-                        'long',
+                        'lat',
+                        'updated_at',
                         );
       $to_keys = array( 'event_id',
                         'title',
@@ -162,8 +171,10 @@ class Doorkeeper
                         'limit',
                         'waiting',
                         'place',
+                        'catch',
                         'lon',
                         'lat',
+                        'updated_at',
                         );
       $convert_array = array();
       foreach ($data as $event) {
@@ -176,7 +187,7 @@ class Doorkeeper
 
               }
           }
-          $event_array = array_merge($event_array,array('type_flg'=> 3));
+          $event_array = array_merge($event_array,array('type_flg'=> 4));
           array_push($convert_array,$event_array);
       }
       return $convert_array;
@@ -185,31 +196,35 @@ class Doorkeeper
   private static function get_zusaar()
   {
       // 何ヶ月取得するのか。
+      $month = 3;
+      $minus = 0;
       $zusaar_data = array();
-      $zusaar_data = array_merge($zusaar_data,static::get_zusaar_api_all());
-      return $zusaar_data;
-  }
-
-  private static function get_zusaar_api_all($start=1)
-  {
-      $zusaar_data = static::get_zusaar_api($start);
-      // print_r($zusaar_data[0]['event']['starts_at']);
-      // date('Y-m-d H:i:s', strtotime("+ 9 hour"));
-      // print date("Ymd")."\n";
-      // print date("Ymd",strtotime($zusaar_data[0]['event']['starts_at']))."\n";
-      if(date("Ymd") <= date("Ymd",strtotime($zusaar_data[0]['event']['starts_at'])))
+      for($i=0;$i<=$month;$i++)
       {
-          //再帰処理  
-          $zusaar_data = array_merge($zusaar_data,static::get_zusaar_api_all($start+1));
+          $ym = date('Ym',strtotime(($i+$minus)." month"));
+          $zusaar_data = array_merge($zusaar_data,static::get_zusaar_api_all($ym));
       }
       return $zusaar_data;
   }
 
-  private static function get_zusaar_api($start)
+  private static function get_zusaar_api_all($ym,$start=1)
+  {
+      $zusaar_data = static::get_zusaar_api($ym,$start)['events'];
+      // ob_flush();
+      //print count($zusaar_data['event'])."\n";
+      if(count($zusaar_data) >= 100)
+      {
+          //再帰処理  
+          $zusaar_data = array_merge($zusaar_data,static::get_zusaar_api_all($ym,$start+100));
+      }
+      return $zusaar_data;
+  }
+
+  private static function get_zusaar_api($ym,$start)
   {
       $curl = curl_init();
-      $url = 'http://api.doorkeeper.jp/events?locale=jp&sort=starts_at'. '&page='. $start;
-      print $url."\n";
+      $url = 'http://api.atnd.org/events?format=json'. '&count=100'.'&start='. $start .'&ym='. $ym;
+      // print $url;
       curl_setopt($curl, CURLOPT_URL,$url);
       curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
       $res = curl_exec($curl);
