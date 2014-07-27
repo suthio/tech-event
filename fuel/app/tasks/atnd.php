@@ -223,7 +223,7 @@ class Atnd
   private static function get_zusaar_api($ym,$start)
   {
       $curl = curl_init();
-      $url = 'http://api.atnd.org/events?format=json'. '&count=100'.'&start='. $start .'&ym='. $ym;
+      $url = 'https://api.atnd.org/events?format=json'. '&count=100'.'&start='. $start .'&ym='. $ym;
       // print $url;
       curl_setopt($curl, CURLOPT_URL,$url);
       curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
