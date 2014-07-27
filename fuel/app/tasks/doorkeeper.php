@@ -85,6 +85,7 @@ class Doorkeeper
       $entry_data = static::convert_now_date($zusaar_data);
       $entry_data = static::input_default_value($entry_data);
       // print_r($entry_data);
+      $entry_data = static::convert_japan_time($entry_data);
       $db = \Database_Connection::instance();
       $db->start_transaction();
       try
@@ -110,6 +111,24 @@ class Doorkeeper
           print_r($ex);
       }
   }
+  private static function convert_japan_time($data)
+  {
+      $events = array();
+      foreach ($data as $event) {
+        
+          if(!empty($event['started_at']))
+          {
+            $event['started_at'] = date('Y-m-d H:i:s', strtotime($event['started_at']));
+          }
+          if(!empty($event['ended_at']))
+          {
+            $event['ended_at'] = date('Y-m-d H:i:s', strtotime($event['ended_at'] ));
+          }
+          array_push($events,$event);
+      }
+      return $events;
+  }
+
   private static function input_default_value($data)
   {
       $events = array();

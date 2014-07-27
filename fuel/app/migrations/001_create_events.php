@@ -22,8 +22,8 @@ class Create_events
 			'catch' => array('constraint' => 255, 'type' => 'varchar', 'null' => true),
 			'lon' => array('constraint' => 20, 'type' => 'varchar', 'null' => true),
 			'lat' => array('constraint' => 20, 'type' => 'varchar', 'null' => true),
-			'created_at' => array('constraint' => 11, 'type' => 'int', 'null' => true),
-			'updated_at' => array('constraint' => 11, 'type' => 'int', 'null' => true),
+			'created_at' => array('type' => 'datetime', 'null' => true),
+			'updated_at' => array('type' => 'datetime', 'null' => true),
 
 		), array('id'));
 	}
