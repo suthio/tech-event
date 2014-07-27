@@ -72,6 +72,7 @@ class Atnd
       foreach ($data as $event) {
           //$limit = $event['owner_nickname'];
           //$limit = $event['url'];
+          $event = $event['event'];
           $data_array = array();
           // イベントから情報を抜き出し
           foreach ($event as $key => $value) {
